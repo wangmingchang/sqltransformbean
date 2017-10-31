@@ -1,4 +1,4 @@
-package com.wmc.sqltransformbean.po.dto;
+package com.github.wangmingchang.sqltransformbean.pojo.dto;
 
 import java.util.List;
 
@@ -12,6 +12,15 @@ public class TableDto {
 	private String tableName; // 表名
 	private String className; // java对象名
 	private List<ColumnDto> columnDtos; // 字段集合
+	private List<String> specialTypes; // java特殊的类型集合
+
+	public List<String> getSpecialTypes() {
+		return specialTypes;
+	}
+
+	public void setSpecialTypes(List<String> specialTypes) {
+		this.specialTypes = specialTypes;
+	}
 
 	public String getTableName() {
 		return tableName;
@@ -39,7 +48,8 @@ public class TableDto {
 
 	@Override
 	public String toString() {
-		return "TableDto [tableName=" + tableName + ", className=" + className + ", columnDtos=" + columnDtos + "]";
+		return "TableDto [tableName=" + tableName + ", className=" + className + ", columnDtos=" + columnDtos
+				+ ", specialTypes=" + specialTypes + "]";
 	}
 
 }

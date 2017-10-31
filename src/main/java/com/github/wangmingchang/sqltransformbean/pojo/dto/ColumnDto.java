@@ -1,4 +1,4 @@
-package com.wmc.sqltransformbean.po.dto;
+package com.github.wangmingchang.sqltransformbean.pojo.dto;
 
 /**
  * 字段信息DTO

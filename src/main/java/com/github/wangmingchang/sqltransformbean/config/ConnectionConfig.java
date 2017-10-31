@@ -1,4 +1,4 @@
-package com.wmc.sqltransformbean.conf;
+package com.github.wangmingchang.sqltransformbean.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

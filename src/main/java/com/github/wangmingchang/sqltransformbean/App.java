@@ -1,4 +1,4 @@
-package com.wmc.sqltransformbean;
+package com.github.wangmingchang.sqltransformbean;
 
 /**
  * Hello world!
