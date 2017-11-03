@@ -1,16 +1,10 @@
 package com.github.wangmingchang.sqltransformbean.pojo.po;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
+import java.math.BigDecimal;
 
-/**
- * 测试返回类
- * 
- * @author 王明昌
- * @since 2017年9月9日
- */
-public class City {
+
+public class Cityes {
 
 	private String haoName; // 名称
 	private String state; // 状态
@@ -20,7 +14,6 @@ public class City {
 	private String accountType; // 帐户类型
 	private Date createDate; // 创建日期
 	private String orderId; // 主键
-	private BigInteger abc;
 
 	public String getHaoName() {
 		return haoName;

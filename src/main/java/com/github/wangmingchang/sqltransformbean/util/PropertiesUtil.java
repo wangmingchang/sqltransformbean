@@ -1,9 +1,8 @@
 package com.github.wangmingchang.sqltransformbean.util;
 
-import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
@@ -23,8 +22,8 @@ public class PropertiesUtil {
 	public static Properties loadProps(String filePath) {
 		Properties properties = new Properties();
 		try {
-			InputStream in = new BufferedInputStream(new FileInputStream(filePath));
-			properties.load(in);
+			InputStreamReader in = new InputStreamReader(new FileInputStream(filePath),"UTF-8");
+			properties.load(in);;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

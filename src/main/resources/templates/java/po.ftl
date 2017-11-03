@@ -1,11 +1,20 @@
 package ${beanPackageName};
 
+<#if tableDto.packageNames?? && tableDto.packageNames?size gt 0>
+<#list tableDto.packageNames as packageName>
+import ${packageName};
+</#list>
+</#if>
+
+<#if remarkDto??>
 /**
- * 测试返回类
+ * ${remarkDto.beanRemark}
  * 
- * @author 王明昌
- * @since 2017年9月9日
+ * @author ${remarkDto.author}
+ * @since ${remarkDto.createDate}
  */
+</#if>
+
 public class ${tableDto.className} {
 
 	<#list tableDto.columnDtos as columnDto>
@@ -22,4 +31,16 @@ public class ${tableDto.className} {
 	}
 	
 	</#list>
+	<#if tableDto.ifToString>
+	@Override
+	public String toString() {
+		return "${tableDto.className} [<#rt>
+		<#list tableDto.columnDtos as columnDto>
+			<#if columnDto_index != 0>"</#if><#t>
+			${columnDto.fieldName}=" + ${columnDto.fieldName} + <#t>
+			<#if !columnDto_has_next>"</#if><#t> 
+		</#list>
+		 ]";<#lt>
+	}
+	</#if>
 }

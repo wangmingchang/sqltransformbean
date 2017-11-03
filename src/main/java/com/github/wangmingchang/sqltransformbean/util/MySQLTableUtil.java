@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.github.wangmingchang.sqltransformbean.config.ConnectionConfig;
 import com.github.wangmingchang.sqltransformbean.pojo.dto.ColumnDto;
+import com.github.wangmingchang.sqltransformbean.pojo.dto.PrimaryKeyColumnDto;
 import com.github.wangmingchang.sqltransformbean.pojo.dto.TableDto;
 
 /**
@@ -35,10 +36,12 @@ public class MySQLTableUtil {
 	 * @return 返回表字段信息
 	 */
 	public static TableDto getColumnByTableName(String tableName) {
-		List<String> primaryKeyList = getPrimaryKeyList(tableName); // 主键信息
+		List<String> primaryKeyList = getPrimaryKeyList(tableName); // 主键名信息
+		List<PrimaryKeyColumnDto> primaryKeyColumnDtoList = new ArrayList<PrimaryKeyColumnDto>(); //主键集合信息
 		Map<String, String> columnRemarkMap = getColumnRemark(tableName); // 备注信息
 		TableDto tableDto = new TableDto(); // 表信息
 		List<ColumnDto> columnDtoList = new ArrayList<ColumnDto>(); // 字段信息集合
+		List<String> packageList = new ArrayList<String>(); // 在生成JavaBean时需要引入的包
 		Connection mySQLConnection = ConnectionConfig.getMySQLConnection();
 		ResultSet resultSet = null;
 		try {
@@ -48,7 +51,7 @@ public class MySQLTableUtil {
 			resultSet = statement.executeQuery(sql);
 			ResultSetMetaData data = resultSet.getMetaData();
 			tableDto.setTableName(tableName);
-			tableDto.setClassName(transformToBean(tableName,true));
+			tableDto.setClassName(transformToBean(tableName, true));
 			for (int i = 1; i <= data.getColumnCount(); i++) {
 				// 获得指定列的列名
 				String columnName = data.getColumnName(i);
@@ -57,32 +60,43 @@ public class MySQLTableUtil {
 				// 对应数据类型的类
 				String fieldType = data.getColumnClassName(i);
 
-				/*
-				 * System.out.println("获得列" + i + "的字段名称:" + columnName);
-				 * System.out.println("获得列" + i + "的数据类型名:" + columnTypeName);
-				 * System.out.println("获得列" + i + "所在的Catalog名字:" + catalogName);
-				 * System.out.println("获得列" + i + "对应数据类型的类:" + fieldType);
-				 * System.out.println("获得列" + i + "对应的表名:" + tableName);
-				 * System.out.println("获得列" + i + "的默认的列的标题:" + columnLabel);
-				 */
-
 				ColumnDto columnDto = new ColumnDto();
 				columnDto.setColumnName(columnName);
-				columnDto.setFieldName(transformToBean(columnName,false));
+				String fieldName = transformToBean(columnName, false);
+				columnDto.setFieldName(fieldName);
 				columnDto.setColumnType(columnTypeName);
-				columnDto.setFieldType(StringUtil.subStringByLastChar(transformToType(fieldType),"."));
+				fieldType = transformToType(fieldType);
+				columnDto.setFieldType(StringUtil.subStringByLastChar(fieldType, "."));
+				if(isContain(fieldType)) {
+					if(!packageList.contains(fieldType)) {
+						packageList.add(fieldType);
+					}
+				}
+				
 				String remark = columnRemarkMap.get(columnName) == null ? "" : columnRemarkMap.get(columnName);
 				columnDto.setRemark(remark);
 				boolean ifKey = primaryKeyList.contains(columnName);
+				//是主键
+				if(ifKey) {
+					PrimaryKeyColumnDto primaryKeyColumnDto = new PrimaryKeyColumnDto();
+					primaryKeyColumnDto.setColumnName(columnName);
+					primaryKeyColumnDto.setFieldName(fieldName);
+					primaryKeyColumnDto.setColumnType(columnTypeName);
+					primaryKeyColumnDto.setFieldType(fieldType);
+					primaryKeyColumnDto.setIfKey(ifKey);
+					primaryKeyColumnDto.setRemark(remark);
+					primaryKeyColumnDtoList.add(primaryKeyColumnDto);
+				}
 				columnDto.setIfKey(ifKey);
 				columnDtoList.add(columnDto);
 			}
 			tableDto.setColumnDtos(columnDtoList);
+			tableDto.setPackageNames(packageList);
+			tableDto.setPrimaryKeyColumnDtos(primaryKeyColumnDtoList);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			closeConnection(mySQLConnection, resultSet);
-			System.out.println("tableDto:" + tableDto);
 		}
 
 		return tableDto;
@@ -184,10 +198,12 @@ public class MySQLTableUtil {
 			String[] strArr = columnName.split("_");
 			for (int i = 0; i < strArr.length; i++) {
 				if (i == 0) {
-					if(flag) {
-						value = strArr[i].replaceFirst(strArr[i].substring(0, 1), strArr[i].substring(0, 1).toUpperCase());
-					}else {
-						value = strArr[i].replaceFirst(strArr[i].substring(0, 1), strArr[i].substring(0, 1).toLowerCase());
+					if (flag) {
+						value = strArr[i].replaceFirst(strArr[i].substring(0, 1),
+								strArr[i].substring(0, 1).toUpperCase());
+					} else {
+						value = strArr[i].replaceFirst(strArr[i].substring(0, 1),
+								strArr[i].substring(0, 1).toLowerCase());
 					}
 				} else {
 					value += strArr[i].replaceFirst(strArr[i].substring(0, 1), strArr[i].substring(0, 1).toUpperCase());
@@ -206,20 +222,29 @@ public class MySQLTableUtil {
 	 */
 	private static String transformToType(String type) {
 		String value = type;
-		if ("java.sql.Timestamp".equals(value) || "java.sql.Date".equals(value)) {
+		if ("java.sql.Timestamp".equals(value) || "java.sql.Date".equals(value) || "java.sql.Timestamp".equals(value)) {
 			value = "java.util.Date";
 		}
 		return value;
 	}
-	
+
 	/**
 	 * 是否包含数组中的某个字符串
+	 * 
 	 * @param flag
-	 * @return
+	 *            传入字符串
+	 * @return 如果传入falg存在集合中，就返回true,否则false
 	 */
 	private static boolean isContain(String flag) {
-		String[] strArr = {"java.math.BigInteger"};
-		return true;
+		boolean value = false;
+		List<String> strList = new ArrayList<String>();
+		strList.add("java.math.BigInteger");
+		strList.add("java.math.BigDecimal");
+		strList.add("java.util.Date");
+		if (strList.contains(flag)) {
+			value = true;
+		}
+		return value;
 	}
 
 }
