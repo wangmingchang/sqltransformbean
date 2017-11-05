@@ -92,5 +92,7 @@ public class SqlTranformBean {
 		System.out.println("remarkDto:" + remarkDto);
 		JavaTemlateUtil.setJavaPoTemplate(beanSavePath, tableDto, beanPackageName, remarkDto);
 		JavaTemlateUtil.setJavaXmlTemplate(xmlSavePath, tableDto, xmlPackageName, beanPackageName,daoPackageName);
+		JavaTemlateUtil.setJavaDaoTemplate(daoSavePath, tableDto, daoPackageName, remarkDto, beanPackageName);
+		
 	}
 }

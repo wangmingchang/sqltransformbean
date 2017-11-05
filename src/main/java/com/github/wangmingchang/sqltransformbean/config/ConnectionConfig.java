@@ -40,7 +40,7 @@ public class ConnectionConfig {
 		String driverClassName = "com.mysql.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/test?serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true";
 		String userName = "root";
-		String password = "admin";
+		String password = "wang125934";
 		Connection mySQLConnection = getMySQLConnection(driverClassName, url, userName, password);
 		return mySQLConnection;
 	}

@@ -74,7 +74,7 @@ public class JavaTemlateUtil {
 		if (StringUtil.isNotBlank(savePath)) {
 			FileUtil.createFolder(savePath);
 		}
-		File file = new File(savePath + tableDto.getClassName() + ".xml");
+		File file = new File(savePath + tableDto.getXmlName() + ".xml");
 		// 创建一个freemarker.template.Configuration实例，它是存储 FreeMarker 应用级设置的核心部分
 		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
 		try {
@@ -92,6 +92,44 @@ public class JavaTemlateUtil {
 			map.put("xmlPackageName", xmlPackageName);
 			map.put("beanPackageName", beanPackageName);
 			map.put("daoPackageName", daoPackageName);
+			template.process(map, writer);
+			writer.flush();
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 输出dao模版
+	 * @param savePath 保存路径
+	 * @param tableDto 输出数据
+	 * @param daoPackageName dao保存的包名
+	 * @param remarkDto 备注的信息
+	 * @param beanPackageName po包名
+	 */
+	public static void setJavaDaoTemplate(String savePath, TableDto tableDto, String daoPackageName,
+			RemarkDto remarkDto, String beanPackageName) {
+		if (StringUtil.isNotBlank(savePath)) {
+			FileUtil.createFolder(savePath);
+		}
+		File file = new File(savePath + tableDto.getDaoName() + ".java");
+		// 创建一个freemarker.template.Configuration实例，它是存储 FreeMarker 应用级设置的核心部分
+		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
+		try {
+			//File dir = new File(path + "/templates/word");
+			// 设置模板目录
+			// configuration.setDirectoryForTemplateLoading(dir);
+			configuration.setClassForTemplateLoading(JavaTemlateUtil.class, javaScanPath);
+			configuration.setDefaultEncoding("UTF-8");
+			// 从设置的目录中获得模板
+			Template template = configuration.getTemplate("dao.ftl");
+			// 将数据与模板渲染的结果写入文件中
+			Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("tableDto", tableDto);
+			map.put("daoPackageName", daoPackageName);
+			map.put("remarkDto", remarkDto);
+			map.put("beanPackageName", beanPackageName);
 			template.process(map, writer);
 			writer.flush();
 			writer.close();

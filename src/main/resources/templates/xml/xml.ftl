@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${daoPackageName}.${tableDto.daoName}">
-  <resultMap id="BaseResultMap" type="${beanPackageName}.${tableDto.className}">
+  <resultMap id="BaseResultMap" type="${beanPackageName!''}.${tableDto.className}">
   <#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>
     <id column="${primaryKeyColumnDto.columnName}" jdbcType="${primaryKeyColumnDto.columnType}" property="${primaryKeyColumnDto.fieldName}" />
   </#list>
@@ -53,7 +53,7 @@
     </#list>
   </delete>
   
-  <insert id="insert" parameterType="${beanPackageName}.${tableDto.className}">
+  <insert id="insert" parameterType="${beanPackageName!''}.${tableDto.className}">
     insert into ${tableDto.tableName} (
     <#list tableDto.columnDtos as columnDto>
     <#if (columnDto_index + 1) % 3 == 0 && columnDto_index != 0 >
@@ -74,7 +74,7 @@
     )
   </insert>
   
-  <insert id="insertSelective" parameterType="${beanPackageName}.${tableDto.className}">
+  <insert id="insertSelective" parameterType="${beanPackageName!''}.${tableDto.className}">
     insert into ${tableDto.tableName}
     <trim prefix="(" suffix=")" suffixOverrides=",">
     <#list tableDto.columnDtos as columnDto>
@@ -92,7 +92,7 @@
     </trim>
   </insert>
   
-  <update id="updateByPrimaryKeySelective" parameterType="${beanPackageName}.${tableDto.className}">
+  <update id="updateByPrimaryKeySelective" parameterType="${beanPackageName!''}.${tableDto.className}">
     update ${tableDto.tableName}
     <set>
 	    <trim suffixOverrides=",">
@@ -109,7 +109,7 @@
     </#list>
   </update>
   
-  <update id="updateByPrimaryKey" parameterType="${beanPackageName}.${tableDto.className}">
+  <update id="updateByPrimaryKey" parameterType="${beanPackageName!''}.${tableDto.className}">
     update ${tableDto.tableName}
     set 
     <trim suffixOverrides=",">
