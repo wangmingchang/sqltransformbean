@@ -1,6 +1,4 @@
 package com.github.wangmingchang.sqltransformbean.pojo.po;
-
-
 /**
  * 学生类
  * 

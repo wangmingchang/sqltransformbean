@@ -5,7 +5,6 @@ package ${beanPackageName};
 import ${packageName};
 </#list>
 </#if>
-
 <#if remarkDto??>
 /**
  * ${remarkDto.beanRemark}
@@ -14,7 +13,6 @@ import ${packageName};
  * @since ${remarkDto.createDate}
  */
 </#if>
-
 public class ${tableDto.className} {
 
 	<#list tableDto.columnDtos as columnDto>

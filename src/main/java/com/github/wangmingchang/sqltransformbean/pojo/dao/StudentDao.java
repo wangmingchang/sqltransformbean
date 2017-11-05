@@ -2,7 +2,6 @@ package com.github.wangmingchang.sqltransformbean.pojo.dao;
 
 import java.util.List;
 import java.util.Map;
-
 import com.github.wangmingchang.sqltransformbean.pojo.po.Student;
 
 /**
