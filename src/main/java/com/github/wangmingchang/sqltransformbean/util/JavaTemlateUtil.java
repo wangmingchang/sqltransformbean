@@ -4,8 +4,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.wangmingchang.sqltransformbean.pojo.dto.ColumnDto;
+import com.github.wangmingchang.sqltransformbean.pojo.dto.PrimaryKeyColumnDto;
 import com.github.wangmingchang.sqltransformbean.pojo.dto.RemarkDto;
 import com.github.wangmingchang.sqltransformbean.pojo.dto.TableDto;
 
@@ -19,6 +26,8 @@ import freemarker.template.Template;
  * @since 2017年10月31日
  */
 public class JavaTemlateUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(JavaTemlateUtil.class);
 	private static String wordPackageName = "/apiDocs/api-doc/";// 生成word保存的包名
 	private static String javaScanPath = "/templates/java"; //freemarke扫描java模板包
 	private static String xmlScanPath = "/templates/xml"; //freemarke扫描xml模板包
@@ -88,6 +97,33 @@ public class JavaTemlateUtil {
 			// 将数据与模板渲染的结果写入文件中
 			Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 			HashMap<String, Object> map = new HashMap<String, Object>();
+			
+			List<String> columnNames = new ArrayList<String>();
+			StringBuffer columnNamSb = new StringBuffer();
+			int size = tableDto.getColumnDtos().size();
+			for (int i = 0; i < size; i++) {
+				ColumnDto columnDto = tableDto.getColumnDtos().get(i);
+				if(i % 3 == 0 && i != 0) {
+					columnNames.add(columnNamSb.toString());
+					//消除已存在的数据
+					columnNamSb = new StringBuffer();
+					columnNamSb.append(columnDto.getColumnName());
+				}else {
+					columnNamSb.append(columnDto.getColumnName());
+				}
+				if(i != (size - 1)) {
+					columnNamSb.append(", ");
+				}else {
+					logger.info("i---->"+i+"*******长度："+size);
+				}
+				logger.info("columnNamSb---->"+columnNamSb);
+				if((size - i +1) < 3 && i == (size - 1)) {
+					//最后一个不能整除的个数，有可能是2或者是1个
+					columnNames.add(columnNamSb.toString());
+				}
+			}
+			
+			map.put("columnNames", columnNames);
 			map.put("tableDto", tableDto);
 			map.put("xmlPackageName", xmlPackageName);
 			map.put("beanPackageName", beanPackageName);
@@ -126,6 +162,9 @@ public class JavaTemlateUtil {
 			// 将数据与模板渲染的结果写入文件中
 			Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 			HashMap<String, Object> map = new HashMap<String, Object>();
+			for (PrimaryKeyColumnDto primaryKeyColumnDto : tableDto.getPrimaryKeyColumnDtos()) {
+				primaryKeyColumnDto.setFieldType(StringUtil.subStringByLastChar(primaryKeyColumnDto.getFieldType(), "."));
+			}
 			map.put("tableDto", tableDto);
 			map.put("daoPackageName", daoPackageName);
 			map.put("remarkDto", remarkDto);

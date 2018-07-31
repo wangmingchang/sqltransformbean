@@ -16,7 +16,7 @@ public class ColumnDto {
 	private String remark; // 备注
 
 	public String getColumnName() {
-		return columnName;
+		return "`"+columnName+"`";
 	}
 
 	public void setColumnName(String columnName) {

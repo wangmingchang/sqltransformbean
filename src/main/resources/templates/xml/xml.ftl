@@ -3,43 +3,38 @@
 <mapper namespace="${daoPackageName}.${tableDto.daoName}">
   <resultMap id="BaseResultMap" type="${beanPackageName!''}.${tableDto.className}">
   <#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>
-    <id column="${primaryKeyColumnDto.columnName}" jdbcType="${primaryKeyColumnDto.columnType}" property="${primaryKeyColumnDto.fieldName}" />
+    <id column="${primaryKeyColumnDto.columnName?substring(primaryKeyColumnDto.columnName?index_of('`')+1,primaryKeyColumnDto.columnName?last_index_of('`'))}" jdbcType="${primaryKeyColumnDto.columnType}" property="${primaryKeyColumnDto.fieldName}" />
   </#list>
   <#list tableDto.columnDtos as columnDto>
   	<#if !columnDto.ifKey>
-    <result column="${columnDto.columnName}" jdbcType="${columnDto.columnType}" property="${columnDto.fieldName}" />
+    <result column="${columnDto.columnName?substring(columnDto.columnName?index_of('`')+1,columnDto.columnName?last_index_of('`'))}" jdbcType="${columnDto.columnType}" property="${columnDto.fieldName}" />
   	</#if>
   </#list>
   </resultMap>
   <sql id="Base_Column_List">
-  <#list tableDto.columnDtos as columnDto>
-  <#if (columnDto_index + 1) % 3 == 0 && columnDto_index != 0 >
-  	${columnDto.columnName}<#if columnDto_has_next>,</#if>
-  <#else>
-  	${columnDto.columnName}<#if columnDto_has_next>,</#if> <#rt>
-  </#if>
+  <#list columnNames as columnName>
+  	${columnName}
   </#list>
-  
   </sql>
-  <select id="selectByPrimaryKey" parameterType="<#if tableDto.primaryKeyColumnDtos?size gt 1>java.util.Map<#else>java.lang.String</#if>" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="<#if tableDto.primaryKeyColumnDtos?size gt 1>java.util.Map<#else>${tableDto.primaryKeyColumnDtos[0].fieldType}</#if>" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from ${tableDto.tableName}
     where 
     <#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>
-    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType="${primaryKeyColumnDto.columnType}"}<#if primaryKeyColumnDto_has_next> AND </#if>
+    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType=${primaryKeyColumnDto.columnType}}<#if primaryKeyColumnDto_has_next> AND </#if>
     </#list>
   </select>
   
   <select id="selectBySelective" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from city
+    from ${tableDto.tableName} 
     where 
-    <trim suffixOverrides="AND">
+    <trim prefixOverrides="AND">
 	    <#list tableDto.columnDtos as columnDto>
-	    <if test="${columnDto.fieldName} != null and ${columnDto.fieldName} != ''">
-	    	${columnDto.columnName} = #${"{" + columnDto.fieldName},jdbcType="${columnDto.columnType}"} AND 
+	    <if test="${columnDto.fieldName} != null">
+	    	AND ${columnDto.columnName} = #${"{" + columnDto.fieldName},jdbcType=${columnDto.columnType}}  
 	    </if>
 	    </#list>
     </trim>
@@ -49,26 +44,22 @@
     delete from ${tableDto.tableName}
     where 
     <#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>
-    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType="${primaryKeyColumnDto.columnType}"}<#if primaryKeyColumnDto_has_next> AND </#if>
+    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType=${primaryKeyColumnDto.columnType}}<#if primaryKeyColumnDto_has_next> AND </#if>
     </#list>
   </delete>
   
   <insert id="insert" parameterType="${beanPackageName!''}.${tableDto.className}">
     insert into ${tableDto.tableName} (
-    <#list tableDto.columnDtos as columnDto>
-    <#if (columnDto_index + 1) % 3 == 0 && columnDto_index != 0 >
-    ${columnDto.columnName}<#if columnDto_has_next>, </#if>
-    <#else>
-    ${columnDto.columnName}<#if columnDto_has_next>, </#if><#rt>
-    </#if>
-    </#list>
+	  <#list columnNames as columnName>
+	  	${columnName}
+	  </#list>
     )
     values (
     <#list tableDto.columnDtos as columnDto>
     <#if (columnDto_index + 1) % 3 == 0 && columnDto_index != 0 >
-    #${"{" + columnDto.fieldName},jdbcType="${columnDto.columnType}"}<#if columnDto_has_next>, </#if>
+    #${"{" + columnDto.fieldName},jdbcType=${columnDto.columnType}}<#if columnDto_has_next>, </#if>
     <#else>
-    #${"{" + columnDto.fieldName},jdbcType="${columnDto.columnType}"}<#if columnDto_has_next>, </#if><#rt>
+    #${"{" + columnDto.fieldName},jdbcType=${columnDto.columnType}}<#if columnDto_has_next>, </#if><#rt>
     </#if>
     </#list>
     )
@@ -78,15 +69,15 @@
     insert into ${tableDto.tableName}
     <trim prefix="(" suffix=")" suffixOverrides=",">
     <#list tableDto.columnDtos as columnDto>
-      <if test="${columnDto.fieldName} != null and ${columnDto.fieldName} != ''">
+      <if test="${columnDto.fieldName} != null">
         ${columnDto.columnName}, 
       </if>
     </#list>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
     <#list tableDto.columnDtos as columnDto>
-      <if test="${columnDto.fieldName} != null and ${columnDto.fieldName} != ''">
-        #${"{" + columnDto.fieldName},jdbcType="${columnDto.columnType}"}, 
+      <if test="${columnDto.fieldName} != null">
+        #${"{" + columnDto.fieldName},jdbcType=${columnDto.columnType}}, 
       </if>
     </#list>
     </trim>
@@ -97,15 +88,15 @@
     <set>
 	    <trim suffixOverrides=",">
 		    <#list tableDto.columnDtos as columnDto>
-		      <if test="${columnDto.fieldName} != null and ${columnDto.fieldName} != ''">
-		        ${columnDto.columnName} = #${ "{" + columnDto.fieldName},jdbcType="${columnDto.columnType}"}, 
+		      <if test="${columnDto.fieldName} != null">
+		        ${columnDto.columnName} = #${ "{" + columnDto.fieldName},jdbcType=${columnDto.columnType}}, 
 		      </if>
 		    </#list>
 	    </trim>
     </set>
     where 
     <#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>
-    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType="${primaryKeyColumnDto.columnType}"} <#if primaryKeyColumnDto_has_next> AND </#if>
+    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType=${primaryKeyColumnDto.columnType}} <#if primaryKeyColumnDto_has_next> AND </#if>
     </#list>
   </update>
   
@@ -114,12 +105,12 @@
     set 
     <trim suffixOverrides=",">
     <#list tableDto.columnDtos as columnDto>
-      ${columnDto.columnName} = #${"{" + columnDto.fieldName},jdbcType="${columnDto.columnType}"}, 
+      ${columnDto.columnName} = #${"{" + columnDto.fieldName},jdbcType=${columnDto.columnType}}, 
     </#list>
     </trim>
     where 
     <#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>
-    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType="${primaryKeyColumnDto.columnType}"} <#if primaryKeyColumnDto_has_next> AND </#if>
+    ${primaryKeyColumnDto.columnName} = #${"{" + primaryKeyColumnDto.fieldName},jdbcType=${primaryKeyColumnDto.columnType}} <#if primaryKeyColumnDto_has_next> AND </#if>
     </#list>
   </update>
 

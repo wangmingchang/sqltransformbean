@@ -1,7 +1,11 @@
 package com.github.wangmingchang.sqltransformbean.config;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Properties;
+
+import com.github.wangmingchang.sqltransformbean.util.PropertiesUtil;
 
 /**
  * 链接配置
@@ -37,10 +41,14 @@ public class ConnectionConfig {
 	 * @return 返回链接对象
 	 */
 	public static Connection getMySQLConnection() {
-		String driverClassName = "com.mysql.jdbc.Driver";
-		String url = "jdbc:mysql://localhost:3306/test?serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true";
-		String userName = "root";
-		String password = "wang125934";
+		URL classpath = Thread.currentThread().getContextClassLoader().getResource("");
+		String rootPate = classpath.getPath();
+		Properties properties = PropertiesUtil.loadProps(rootPate + "sqlTransformBean.properties");
+		
+		String driverClassName = properties.getProperty("jdbc.driverClassName");
+		String url = properties.getProperty("jdbc.url");
+		String userName = properties.getProperty("jdbc.userName");
+		String password = properties.getProperty("jdbc.password");
 		Connection mySQLConnection = getMySQLConnection(driverClassName, url, userName, password);
 		return mySQLConnection;
 	}

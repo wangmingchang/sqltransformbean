@@ -14,7 +14,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
   </properties>
-
+	<parent>  
+	        <groupId>org.springframework.boot</groupId>  
+	        <artifactId>spring-boot-starter-parent</artifactId>  
+	        <version>1.5.2.RELEASE</version>  
+	    </parent>
   <dependencies>
   <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 	<dependency>
@@ -27,7 +31,21 @@
 		<groupId>org.freemarker</groupId>
 		<artifactId>freemarker</artifactId>
 		<version>2.3.23</version>
-	</dependency>  
+	</dependency> 
+	 
+	 <dependency>  
+	    <groupId>org.springframework.boot</groupId>  
+	    <artifactId>spring-boot-starter-websocket</artifactId>  
+	</dependency> 
+	<dependency>  
+            <groupId>org.springframework.boot</groupId>  
+            <artifactId>spring-boot-starter-web</artifactId>  
+        </dependency>  
+	<dependency>  
+         <groupId>org.mybatis.spring.boot</groupId>  
+         <artifactId>mybatis-spring-boot-starter</artifactId>  
+         <version>1.2.0</version>  
+     </dependency> 
  
   
     <dependency>

@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.wangmingchang.sqltransformbean.config.ConnectionConfig;
 import com.github.wangmingchang.sqltransformbean.pojo.dto.ColumnDto;
 import com.github.wangmingchang.sqltransformbean.pojo.dto.PrimaryKeyColumnDto;
@@ -22,7 +25,9 @@ import com.github.wangmingchang.sqltransformbean.pojo.dto.TableDto;
  * @since 2017年10月30日
  */
 public class MySQLTableUtil {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(MySQLTableUtil.class);
+	
 	public static void main(String[] args) {
 		getColumnByTableName("t_zw_test_stystem_user");
 
@@ -57,6 +62,11 @@ public class MySQLTableUtil {
 				String columnName = data.getColumnName(i);
 				// 获得指定列的数据类型名
 				String columnTypeName = data.getColumnTypeName(i);
+				if(columnTypeName.equals("INT")) {
+					columnTypeName = "INTEGER";
+				}else if(columnTypeName.equals("DATETIME")) {
+					columnTypeName = "TIMESTAMP";
+				}
 				// 对应数据类型的类
 				String fieldType = data.getColumnClassName(i);
 
@@ -119,7 +129,7 @@ public class MySQLTableUtil {
 			while (primaryKeys.next()) {
 				String primaryKeyName = primaryKeys.getString("COLUMN_NAME"); // 主键名
 				primaryKeyList.add(primaryKeyName);
-				System.out.println("primaryKeyName:" + primaryKeyName);
+				logger.info("primaryKeyName:" + primaryKeyName);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -195,6 +205,7 @@ public class MySQLTableUtil {
 	private static String transformToBean(String columnName, boolean flag) {
 		String value = null;
 		if (columnName != null) {
+			columnName = columnName.toLowerCase();			
 			String[] strArr = columnName.split("_");
 			for (int i = 0; i < strArr.length; i++) {
 				if (i == 0) {
