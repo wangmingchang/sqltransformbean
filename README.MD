@@ -13,8 +13,8 @@
 1.新增一个名字为sqlTransformBean.properties的文件，或者拷贝git上相同名字文件</br>
 2.调用jar中的SqlTranformBean.init()方法</br>
 如下
-``` properties相关配置
-
+``` 
+#####properties相关配置
 #数据库链接配置
 jdbc.driverClassName=com.mysql.jdbc.Driver
 jdbc.url=jdbc:mysql://127.0.0.1:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
@@ -78,7 +78,6 @@ java.remark.author=王明昌
 
 ```
 **执行调用**
-``` java
 /**
  * @author:王明昌
  * @Date:2018/7/31
@@ -121,6 +120,7 @@ public class IntegeralEntity {
 	private Date createTime; // 创建时间
 	...
 }
+```
 3.1最终输出结果DAO</br>
 package com.github.wangmingchang.sqltransformbean.pojo.dao;
 
@@ -150,6 +150,7 @@ public interface IntegeralDao {
 	
 	int updateByPrimaryKey(IntegeralEntity integeralEntity);
 }
+```
 3.1最终输出结果XML</br>
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -184,3 +185,4 @@ public interface IntegeralDao {
     `id` = #{id,jdbcType=INTEGER}
   </select>
   ...
+  ```
