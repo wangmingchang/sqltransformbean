@@ -43,6 +43,9 @@ public class SqlTranformBean {
 		String daoPackageName = properties.getProperty("path.daoPackageName");
 		String xmlTargetProject = properties.getProperty("path.xmlTargetProject", "src/main/resource");
 		String xmlPackageName = properties.getProperty("path.xmlPackageName");
+		String beanAbsoluteUrl = properties.getProperty("path.beanAbsoluteUrl");
+		String daoAbsoluteUrl = properties.getProperty("path.daoAbsoluteUrl");
+		String xmlAbsoluteUrl = properties.getProperty("path.xmlAbsoluteUrl");
 		
 		String isBeanName = properties.getProperty("java.isBeanName");
 		isBeanName = StringUtil.isBlank(isBeanName) ? "true" : isBeanName;
@@ -82,12 +85,24 @@ public class SqlTranformBean {
 
 		String beanSavePath = rootPate + beanPackageName.replace(".", "/") + "/";
 		beanSavePath = StringUtil.transform(beanSavePath, "target/classes", beanTargetProject);
+		if(StringUtil.isNotBlank(beanAbsoluteUrl)) {
+			//如果有绝对路径，优先级最高
+			beanSavePath = beanAbsoluteUrl.replace("\\\\", "/")+ "/";
+		}
 		logger.info("beanSavePath:" + beanSavePath);
 		String daoSavePath = rootPate + daoPackageName.replace(".", "/") + "/";
 		daoSavePath = StringUtil.transform(daoSavePath, "target/classes", daoTargetProject);
+		if(StringUtil.isNotBlank(daoAbsoluteUrl)) {
+			//如果有绝对路径，优先级最高
+			daoSavePath = daoAbsoluteUrl.replace("\\\\", "/")+ "/";
+		}
 		logger.info("daoSavePath:" + daoSavePath);
 		String xmlSavePath = rootPate + xmlPackageName.replace(".", "/") + "/";
 		xmlSavePath = StringUtil.transform(xmlSavePath, "target/classes", xmlTargetProject);
+		if(StringUtil.isNotBlank(xmlAbsoluteUrl)) {
+			//如果有绝对路径，优先级最高
+			xmlSavePath = xmlAbsoluteUrl.replace("\\\\", "/")+ "/";
+		}
 		logger.info("xmlSavePath:" + xmlSavePath);
 
 		TableDto tableDto = MySQLTableUtil.getColumnByTableName(tableName);
