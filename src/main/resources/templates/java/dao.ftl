@@ -2,7 +2,6 @@ package ${daoPackageName};
 
 import java.util.List;
 import java.util.Map;
-import org.apache.ibatis.annotations.Param;
 import ${beanPackageName!''}.${tableDto.className};
 
 <#if remarkDto??>
@@ -14,11 +13,11 @@ import ${beanPackageName!''}.${tableDto.className};
  </#if>
 public interface ${tableDto.daoName} {
 	
-	${tableDto.className} selectByPrimaryKey(<#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto> @Param("${primaryKeyColumnDto.fieldName}")  ${primaryKeyColumnDto.fieldType} ${primaryKeyColumnDto.fieldName} <#if primaryKeyColumnDto_has_next>,</#if></#list>);
+	${tableDto.className} selectByPrimaryKey(<#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>${primaryKeyColumnDto.fieldType} ${primaryKeyColumnDto.fieldName} <#if primaryKeyColumnDto_has_next>,</#if></#list>);
 	
 	List<${tableDto.className}> selectBySelective(Map paramMap);
 	
-	int deleteByPrimaryKey(<#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto> @Param("${primaryKeyColumnDto.fieldName}")  ${primaryKeyColumnDto.fieldType} ${primaryKeyColumnDto.fieldName} <#if primaryKeyColumnDto_has_next>,</#if></#list>);
+	int deleteByPrimaryKey(<#list tableDto.primaryKeyColumnDtos as primaryKeyColumnDto>${primaryKeyColumnDto.fieldType} ${primaryKeyColumnDto.fieldName} <#if primaryKeyColumnDto_has_next>,</#if></#list>);
 	
 	int insert(${tableDto.className} ${tableDto.className?uncap_first});
 	
