@@ -12,7 +12,7 @@
 # 快速使用
 1.新增一个名字为sqlTransformBean.properties的文件，或者拷贝git上相同名字文件</br>
 2.调用jar中的SqlTranformBean.init()方法</br>
-###properties相关配置如下
+### properties相关配置如下
 ``` 
 #数据库链接配置
 jdbc.driverClassName=com.mysql.jdbc.Driver
@@ -74,9 +74,9 @@ java.remark.author=王明昌
 
 
 ```
-
-###执行调用
+### 执行调用
 ```
+
 /**
  * @author:王明昌
  * @Date:2018/7/31
@@ -87,11 +87,9 @@ public class SqlTranformExecute {
         SqlTranformBean.init();
     }
 }
-
-
 ```
-3.1最终输出结果PO</br>
 
+3.1最终输出结果PO</br>
 ```
 package com.github.wangmingchang.sqltransformbean.pojo.po;
 
