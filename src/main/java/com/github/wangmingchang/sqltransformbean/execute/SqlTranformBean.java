@@ -133,10 +133,10 @@ public class SqlTranformBean {
 			JavaTemlateUtil.setJavaPoTemplate(beanSavePath, tableDto, beanPackageName, remarkDto);
 		}
 		if("true".equals(isDaoName)) {
-			JavaTemlateUtil.setJavaXmlTemplate(xmlSavePath, tableDto, xmlPackageName, beanPackageName, daoPackageName);
+			JavaTemlateUtil.setJavaDaoTemplate(daoSavePath, tableDto, daoPackageName, remarkDto, beanPackageName);
 		}
 		if("true".equals(isXmlNameableName)) {
-			JavaTemlateUtil.setJavaDaoTemplate(daoSavePath, tableDto, daoPackageName, remarkDto, beanPackageName);
+			JavaTemlateUtil.setJavaXmlTemplate(xmlSavePath, tableDto, xmlPackageName, beanPackageName, daoPackageName);
 		}
 		logger.info("***********************执行结束*********************");
 	}
