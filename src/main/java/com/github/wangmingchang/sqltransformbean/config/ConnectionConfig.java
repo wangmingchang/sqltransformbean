@@ -43,6 +43,7 @@ public class ConnectionConfig {
 	public static Connection getMySQLConnection() {
 		URL classpath = Thread.currentThread().getContextClassLoader().getResource("");
 		String rootPate = classpath.getPath();
+		System.out.println("链接对象-root:" + rootPate);
 		Properties properties = PropertiesUtil.loadProps(rootPate + "sqlTransformBean.properties");
 		
 		String driverClassName = properties.getProperty("jdbc.driverClassName");
