@@ -62,18 +62,19 @@ public class MySQLTableUtil {
                 // 获得指定列的数据类型名
                 String columnTypeName = data.getColumnTypeName(i);
                 int precision = data.getPrecision(i);
-                if (columnTypeName.equals("INT") || columnTypeName.equals("BIGINT")) {
-                    if (precision > 9){
-                        columnTypeName = "Long";
-                    }else {
-                        columnTypeName = "INTEGER";
-                    }
+                if (columnTypeName.equals("INT")) {
+                    columnTypeName = "INTEGER";
                 } else if (columnTypeName.equals("DATETIME")) {
                     columnTypeName = "TIMESTAMP";
                 }
                 // 对应数据类型的类
                 String fieldType = data.getColumnClassName(i);
-
+                if(fieldType.equals("java.lang.Integer") && precision > 9){
+                    fieldType = "java.lang.Long";
+                }
+                if(columnTypeName.equals("TINYINT")){
+                    fieldType = "Short";
+                }
                 ColumnDto columnDto = new ColumnDto();
                 columnDto.setColumnName(columnName);
                 String fieldName = transformToBean(columnName, false);
